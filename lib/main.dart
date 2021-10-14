@@ -14,6 +14,61 @@ import 'domain/workout.dart';
 // https://developer.android.com/studio/build/multidex
 // https://stackoverflow.com/questions/63492211/no-firebase-app-default-has-been-created-call-firebase-initializeapp-in
 
+
+/*import 'package:flutter/material.dart';
+
+void main() {
+  runApp(Example());
+}
+
+class Example extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _ExampleState();
+}
+
+class _ExampleState extends State<Example> {
+
+  String dropdownValue = 'One';
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child:  DropdownButton<String>(
+          value: dropdownValue,
+          icon: const Icon(Icons.arrow_downward),
+          iconSize: 24,
+          elevation: 16,
+          style: const TextStyle(
+              color: Colors.deepPurple
+          ),
+          underline: Container(
+            height: 2,
+            color: Colors.deepPurpleAccent,
+          ),
+          onChanged: (String? newValue) {
+            setState(() {
+              dropdownValue = newValue!;
+            });
+          },
+          items: <String>['One', 'Two', 'Free', 'Four']
+              .map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          })
+              .toList(),
+        ),
+        ),
+      ),
+    );
+  }
+}*/
+
+
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -37,4 +92,5 @@ class MaxFitApp extends StatelessWidget {
     );
   }
 }
+
 
