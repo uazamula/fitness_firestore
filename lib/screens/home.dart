@@ -1,6 +1,7 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:fitness_firestore/components/active_workouts.dart';
 import 'package:fitness_firestore/components/workout_list.dart';
+import 'package:fitness_firestore/screens/add_workout.dart';
 import 'package:fitness_firestore/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:fitness_firestore/domain/workout.dart';
@@ -53,6 +54,13 @@ class _HomePageState extends State<HomePage> {
         ),
         body: sectionIndex == 0 ? ActiveWorkouts() : WorkoutsList(),
         bottomNavigationBar: myCurvedNavigationBar,
+        //TODO
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          backgroundColor: Colors.pinkAccent,
+          foregroundColor: Theme.of(context).primaryColor,
+          onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (ctx)=>AddWorkout()));},
+        ),
         /*   bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(

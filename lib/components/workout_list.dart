@@ -148,69 +148,72 @@ class _WorkoutsListState extends State<WorkoutsList> {
       child: Card(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              SwitchListTile(
-                  title: const Text('Only My Workouts'),
-                  value: filterOnlyMyWorkouts,
-                  onChanged: (bool val) =>
-                      setState(() => filterOnlyMyWorkouts = val)),
-              DropdownButton<String>(
-                value: filterLevel,
-                icon: const Icon(Icons.arrow_downward),
-                iconSize: 24,
-                elevation: 16,
-                style: const TextStyle(color: Colors.deepPurple),
-                underline: Container(
-                  height: 2,
-                  color: Colors.deepPurpleAccent,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                SwitchListTile(
+                    title: const Text('Only My Workouts'),
+                    value: filterOnlyMyWorkouts,
+                    onChanged: (bool val) =>
+                        setState(() => filterOnlyMyWorkouts = val)),
+                DropdownButtonFormField<String>(
+                  value: filterLevel,
+                  decoration: const InputDecoration(labelText: 'Level'),
+                  /*icon: const Icon(Icons.arrow_downward),
+                  iconSize: 24,
+                  elevation: 16,
+                  style: const TextStyle(color: Colors.deepPurple),
+                  underline: Container(
+                    height: 2,
+                    color: Colors.deepPurpleAccent,
+                  ),*/
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      filterLevel = newValue!;
+                    });
+                  },
+                  items: <String>['Any Level', 'Beginner', 'Intermediate', 'Advanced']
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
                 ),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    filterLevel = newValue!;
-                  });
-                },
-                items: <String>['Any Level', 'Beginner', 'Intermediate', 'Advanced']
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-              ),
-              TextFormField(
-                controller: filterTitleController,
-                decoration: const InputDecoration(labelText: 'Title'),
-                onChanged: (String val) => setState(() => filterTitle = val),
-              ),
-              Row(
-                children: <Widget>[
-                  Expanded(
-                    flex: 1,
-                    child: RaisedButton(
-                      onPressed: () {
-                        filter();
-                      },
-                      child:
-                          Text("Apply", style: TextStyle(color: Colors.white)),
-                      color: Theme.of(context).primaryColor,
+                TextFormField(
+                  controller: filterTitleController,
+                  decoration: const InputDecoration(labelText: 'Title'),
+                  onChanged: (String val) => setState(() => filterTitle = val),
+                ),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: RaisedButton(
+                        onPressed: () {
+                          filter();
+                        },
+                        child:
+                            Text("Apply", style: TextStyle(color: Colors.white)),
+                        color: Theme.of(context).primaryColor,
+                      ),
                     ),
-                  ),
-                  SizedBox(width: 10),
-                  Expanded(
-                    flex: 1,
-                    child: RaisedButton(
-                      onPressed: () {
-                        clearFilter();
-                      },
-                      child:
-                          Text("Clear", style: TextStyle(color: Colors.white)),
-                      color: Colors.red,
-                    ),
-                  )
-                ],
-              ),
-            ],
+                    SizedBox(width: 10),
+                    Expanded(
+                      flex: 1,
+                      child: RaisedButton(
+                        onPressed: () {
+                          clearFilter();
+                        },
+                        child:
+                            Text("Clear", style: TextStyle(color: Colors.white)),
+                        color: Colors.red,
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
