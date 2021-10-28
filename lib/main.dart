@@ -1,5 +1,6 @@
 //import 'dart:html';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fitness_firestore/domain/my_user.dart';
 import 'package:fitness_firestore/screens/auth.dart';
@@ -73,6 +74,12 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MaxFitApp());
+
+ /* var collection = FirebaseFirestore.instance.collection('collection');
+  var snapshots = await collection.get();
+  for (var doc in snapshots.docs) {
+    await doc.reference.delete();
+  }*/
 }
 
 class MaxFitApp extends StatelessWidget {

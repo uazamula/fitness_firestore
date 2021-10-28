@@ -1,18 +1,35 @@
 class Workout {
+  String? uid;
   String? title;
   String? author;
   String? description;
   String? level;
+  bool? isOnline;
 
   Workout({
+    this.uid,
     this.title,
     this.author,
     this.description,
     this.level,
   });
+  Workout.fromJson(String uid, Map<String,dynamic> data){
+    uid = uid;
+    title = data['title'];
+    author = data['author'];
+    description = data['description'];
+    level = data['level'];
+
+
+  }
 }
 
 class WorkoutSchedule {
+  String? uid;
+  String? title;
+  String? author;
+  String? description;
+  String? level;
   List<WorkoutWeek>? weeks;
 
   WorkoutSchedule({this.weeks});
@@ -21,6 +38,26 @@ class WorkoutSchedule {
     List<WorkoutWeek>? copiedWeeks =
         weeks!.map((w) => w.copy()).cast<WorkoutWeek>().toList();
     return WorkoutSchedule(weeks: copiedWeeks);
+  }
+  Map<String,dynamic> toMap(){
+    return {
+      'title': title,
+      'description': description,
+      'level': level,
+      'author': author,
+      'weeks': weeks!.map((w)=>w.toMap()).toList()
+    };
+  }
+
+  Map<String,dynamic> toWorkoutMap(){
+    return {
+      'title': title,
+      'description': description,
+      'level': level,
+      'author': author,
+      'isOnline': true,
+      'createdOn': DateTime.now().millisecondsSinceEpoch
+    };
   }
 }
 
@@ -37,8 +74,15 @@ class WorkoutWeek {
 
   int get daysWithDrills =>
       days != null ? days!.where((d) => d.isSet).length : 0;
-}
 
+  Map<String, dynamic> toMap() {
+    return {
+      'notes': notes,
+      'days': days!.map((w)=>w.toMap()).toList()
+      //TODO #6  9:50
+    };
+  }
+}
 class WorkoutWeekDay {
   late String notes;
   late List<WorkoutDrillsBlock> drillBlocks;
@@ -53,6 +97,13 @@ class WorkoutWeekDay {
     var copiedBlocks = drillBlocks.map((w) => w.copy()).cast<WorkoutDrillsBlock>().toList();
     return WorkoutWeekDay(drillBlocks: copiedBlocks, notes: notes);
   }
+
+  Map<String,dynamic> toMap() {
+    return{
+      'notes': notes,
+      'drillBlocks': drillBlocks.map((w) => w.toMap()).toList()
+    };
+  }
 }
 class WorkoutDrill {
   String? title;
@@ -64,6 +115,15 @@ class WorkoutDrill {
 
   WorkoutDrill copy(){
     return WorkoutDrill(title: title, weight: weight, sets: sets, reps: reps);
+  }
+
+  Map<String,dynamic> toMap() {
+    return{
+      'title': title,
+      'weight': weight,
+      'sets': sets,
+      'reps': reps
+    };
   }
 }
 
@@ -102,6 +162,15 @@ abstract class WorkoutDrillsBlock{
   List<WorkoutDrill> copyDrills(){
     return drills!.map((w) => w.copy()).toList();
   }
+  Map<String,dynamic> toMapParams();
+
+  Map<String,dynamic> toMap() {
+    var mainMap = {
+      'type': type.toString(),
+      'drills': drills!.map((w) => w.toMap()).toList()
+    };
+    return{} ..addAll(mainMap) ..addAll(toMapParams());
+  }
 }
 
 class WorkoutSingleDrillBlock extends WorkoutDrillsBlock
@@ -112,6 +181,13 @@ class WorkoutSingleDrillBlock extends WorkoutDrillsBlock
   WorkoutSingleDrillBlock copy(){
     return WorkoutSingleDrillBlock(copyDrills()[0]);
   }
+
+  @override
+  Map<String, dynamic> toMapParams() {
+    // TODO: implement toMapParams
+    //throw UnimplementedError();
+    return{};
+  }
 }
 
 class WorkoutMultisetDrillBlock extends WorkoutDrillsBlock
@@ -121,6 +197,13 @@ class WorkoutMultisetDrillBlock extends WorkoutDrillsBlock
 
   WorkoutMultisetDrillBlock copy(){
     return WorkoutMultisetDrillBlock(copyDrills());
+  }
+
+  @override
+  Map<String, dynamic> toMapParams() {
+    // TODO: implement toMapParams
+    //throw UnimplementedError();
+    return{};
   }
 }
 
@@ -133,6 +216,13 @@ class WorkoutAmrapDrillBlock extends WorkoutDrillsBlock
 
   WorkoutAmrapDrillBlock copy(){
     return WorkoutAmrapDrillBlock(minutes: minutes , drills: copyDrills());
+  }
+
+  @override
+  Map<String, dynamic> toMapParams() {
+    // TODO: implement toMapParams
+    //throw UnimplementedError();
+    return{};
   }
 }
 
@@ -148,6 +238,13 @@ class WorkoutForTimeDrillBlock extends WorkoutDrillsBlock
   WorkoutForTimeDrillBlock copy(){
     return WorkoutForTimeDrillBlock(timeCapMin: timeCapMin, rounds: rounds, restBetweenRoundsMin: restBetweenRoundsMin, drills: copyDrills());
   }
+
+  @override
+  Map<String, dynamic> toMapParams() {
+    // TODO: implement toMapParams
+    //throw UnimplementedError();
+    return{};
+  }
 }
 
 class WorkoutEmomDrillBlock extends WorkoutDrillsBlock
@@ -161,6 +258,13 @@ class WorkoutEmomDrillBlock extends WorkoutDrillsBlock
   WorkoutEmomDrillBlock copy(){
     return WorkoutEmomDrillBlock(timeCapMin: timeCapMin, intervalMin: intervalMin, drills: copyDrills());
   }
+
+  @override
+  Map<String, dynamic> toMapParams() {
+    // TODO: implement toMapParams
+    //throw UnimplementedError();
+    return{};
+  }
 }
 
 class WorkoutRestDrillBlock extends WorkoutDrillsBlock
@@ -172,5 +276,12 @@ class WorkoutRestDrillBlock extends WorkoutDrillsBlock
 
   WorkoutRestDrillBlock copy(){
     return WorkoutRestDrillBlock(timeMin: timeMin);
+  }
+
+  @override
+  Map<String, dynamic> toMapParams() {
+    // TODO: implement toMapParams
+    //throw UnimplementedError();
+    return{};
   }
 }
