@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fitness_firestore/domain/workout.dart';
+//https://stackoverflow.com/questions/67570502/flutter-type-documentsnapshotmyobject-myobject-is-not-a-subtype-of-typ
 
 class DatabaseService{
   final CollectionReference _workoutCollection = FirebaseFirestore.instance.collection('myWorkouts');
@@ -27,5 +28,10 @@ class DatabaseService{
 
     return query.snapshots().map((QuerySnapshot data) =>
         data.docs.map((DocumentSnapshot doc) => Workout.fromJson(doc.id, doc.data() as Map<String,dynamic>)).toList());//TODO was doc.data
+  }
+
+  Future<WorkoutSchedule> getWorkout(String? id) async{
+    var doc = await _workoutSchedulesCollection.doc(id).get();
+    return WorkoutSchedule.fromJson(doc.id, _workoutSchedulesCollection.parameters);
   }
 }

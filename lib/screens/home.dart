@@ -1,4 +1,5 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_firestore/components/active_workouts.dart';
 import 'package:fitness_firestore/components/workout_list.dart';
 import 'package:fitness_firestore/screens/add_workout.dart';
@@ -16,8 +17,37 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int sectionIndex = 0;
 
+  resetPassword() async {
+    try {
+      String? email = FirebaseAuth.instance.currentUser!.email;
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email!=null?email:"" );
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.orangeAccent,
+          content: Text(
+            'Password Reset Email has been sent !',
+            style: TextStyle(fontSize: 18.0),
+          ),
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.orangeAccent,
+            content: Text(
+              'No user found for that email.',
+              style: TextStyle(fontSize: 18.0),
+            ),
+          ),
+        );
+      }
+    }
+  }
   @override
   Widget build(BuildContext context) {
+    var authService = AuthService();
     var myCurvedNavigationBar = CurvedNavigationBar(
       items: [
         Icon(Icons.fitness_center),
@@ -45,7 +75,21 @@ class _HomePageState extends State<HomePage> {
           actions: [
             TextButton.icon(
               onPressed: () {
-                AuthService.logOut();
+
+
+resetPassword();
+
+
+
+
+
+              },
+              icon: Icon(Icons.email, color: Colors.white),
+              label: SizedBox.shrink(),
+            ),
+            TextButton.icon(
+              onPressed: () {
+                authService.logOut();
               },
               icon: Icon(Icons.supervised_user_circle, color: Colors.white),
               label: SizedBox.shrink(),

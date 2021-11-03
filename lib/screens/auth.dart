@@ -1,7 +1,15 @@
+import 'dart:async';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_firestore/domain/my_user.dart';
+import 'package:fitness_firestore/screens/home.dart';
+import 'package:fitness_firestore/screens/restart.dart';
 import 'package:fitness_firestore/services/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 
 class AuthorizationPage extends StatefulWidget {
   const AuthorizationPage({Key? key}) : super(key: key);
@@ -17,8 +25,11 @@ class _AuthorizationPageState extends State<AuthorizationPage> {
   String? _email;
   String? _password;
   bool showLogin = true;
+  bool emailVerified = false;
 
   AuthService _authService = AuthService();
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -65,14 +76,24 @@ class _AuthorizationPageState extends State<AuthorizationPage> {
     );
   }
 
-  void _loginButtonAction() async{
+  void _loginButtonAction() async {
     _email = _emailController.text;
     _password = _passwordController.text;
 
-    if(_email!.isEmpty ||_password!.isEmpty) return;
-    MyUser? user = await _authService.signInWithEmailAndPassword(_email!.trim(), _password!);
+    if (_email!.isEmpty || _password!.isEmpty) return;
+    User? user = await _authService.signInWithEmailAndPassword(
+        _email!.trim(), _password!);
+    emailVerified = user!.emailVerified;
+    print('юзер пройшов верифікацію: $emailVerified');
+    if (user != null) if (user.emailVerified)
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePage(),
+        ),
+      );
 
-    if(user==null){
+    if (user == null) {
       Fluttertoast.showToast(
           msg: "Can't sign in you! Please check your email/password!",
           toastLength: Toast.LENGTH_SHORT,
@@ -80,23 +101,49 @@ class _AuthorizationPageState extends State<AuthorizationPage> {
           timeInSecForIosWeb: 1,
           backgroundColor: Colors.red,
           textColor: Colors.white,
-          fontSize: 16.0
-      );
-    }
-      else {
+          fontSize: 16.0);
+    } else {
+      emailVerified = user.emailVerified;
+      print('\n оце і є мій юзер : $user\n');
+
       _emailController.clear();
       _passwordController.clear();
     }
   }
 
-  void _registerButtonAction() async{
+  void _registerButtonAction() async {
     _email = _emailController.text;
     _password = _passwordController.text;
 
-    if(_email!.isEmpty ||_password!.isEmpty) return;
-    MyUser? user = await _authService.registerInWithEmailAndPassword(_email!.trim(), _password!);
+    if (_email!.isEmpty || _password!.isEmpty) return;
+    Future<User?> user = _authService
+        .registerInWithEmailAndPassword(_email!.trim(), _password!)
+        .then((user) async {
+      if (user != null && !user.emailVerified) {
+        await FirebaseAuth.instance.currentUser!.sendEmailVerification();
 
-    if(user==null){
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Restart(),
+            ));
+
+        Fluttertoast.showToast(
+            msg:
+                'An email has just been sent to you, Click the link provided to complete registration',
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 5,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
+
+        //SystemNavigator.pop();//Only for Android
+      }
+     // if (user != null && user.emailVerified) Phoenix.rebirth(context);
+    });
+
+    if (user == null) {
       Fluttertoast.showToast(
           msg: "Can't register you! Please check your email/password!",
           toastLength: Toast.LENGTH_SHORT,
@@ -104,10 +151,8 @@ class _AuthorizationPageState extends State<AuthorizationPage> {
           timeInSecForIosWeb: 1,
           backgroundColor: Colors.red,
           textColor: Colors.white,
-          fontSize: 16.0
-      );
-    }
-    else {
+          fontSize: 16.0);
+    } else {
       _emailController.clear();
       _passwordController.clear();
     }
@@ -208,7 +253,22 @@ class _AuthorizationPageState extends State<AuthorizationPage> {
       child: Text(text,
           style: TextStyle(
               fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 20)),
-      onPressed: func,
+      onPressed: func
+      //BEGIN///
+      /*if (!showLogin) {
+          // final User? user = Provider.of<User?>(context, listen: false);
+          final user = FirebaseAuth.instance.currentUser;
+
+          print('\n оце і є мій юзер : $user\n');
+
+          //if(user!.emailVerified) user.updateDisplayName('Льоха');
+
+          if (user != null && !user.emailVerified) {
+            user.sendEmailVerification();
+          }
+        }*/
+      //END/////////
+      ,
     );
   }
 }

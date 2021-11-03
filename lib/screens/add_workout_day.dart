@@ -25,7 +25,7 @@ class _AddWorkoutDayState extends State<AddWorkoutDay> {
     }
 
     if (day.drillBlocks == null || day.drillBlocks.length == 0)
-      day.drillBlocks = [WorkoutSingleDrillBlock(WorkoutDrill())];
+      day.drillBlocks = [WorkoutSingleDrillBlock(drill: WorkoutDrill())];
 
     super.initState();
   }
@@ -51,10 +51,10 @@ class _AddWorkoutDayState extends State<AddWorkoutDay> {
     WorkoutDrillsBlock? newBlock;
     switch (_defaultNewDrillType) {
       case 'Single Drill':
-        newBlock = WorkoutSingleDrillBlock(WorkoutDrill());
+        newBlock = WorkoutSingleDrillBlock(drill: WorkoutDrill());
         break;
       case 'Multiset Drill':
-        newBlock = WorkoutMultisetDrillBlock([WorkoutDrill(), WorkoutDrill()]);
+        newBlock = WorkoutMultisetDrillBlock(drills: [WorkoutDrill(), WorkoutDrill()]);
         break;
       case 'For Time':
         newBlock =

@@ -13,7 +13,7 @@ class AddWorkoutWeek extends StatefulWidget {
 }
 
 class _AddWorkoutWeekState extends State<AddWorkoutWeek> {
-  WorkoutWeek week = WorkoutWeek();
+  WorkoutWeek week = WorkoutWeek(notes: '');
 
   @override
   void initState() {

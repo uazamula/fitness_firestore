@@ -3,16 +3,16 @@ import 'package:fitness_firestore/domain/my_user.dart';
 import 'package:provider/provider.dart';
 
 class AuthService {
-  static final  FirebaseAuth _fAuth = FirebaseAuth.instance;
+  final  FirebaseAuth _fAuth = FirebaseAuth.instance;
 
-  Future<MyUser?> signInWithEmailAndPassword(
+  Future<User?> signInWithEmailAndPassword(
       String email, String password) async {
     try {
       UserCredential result = await _fAuth.signInWithEmailAndPassword(
           email: email,
           password: password); // UserCredential is former AuthResult
       User? user = result.user; // User is former FirebaseUser
-      return MyUser.fromFirebase(user!);
+      return user;
     } catch (e) {
       print(e);
       print('помилка з іменем або паролем');
@@ -20,14 +20,14 @@ class AuthService {
     }
   }
 
-  Future<MyUser?> registerInWithEmailAndPassword(
+  Future<User?> registerInWithEmailAndPassword(
       String email, String password) async {
     try {
       UserCredential result = await _fAuth.createUserWithEmailAndPassword(
           email: email,
           password: password); // UserCredential is former AuthResult
       User? user = result.user; // User is former FirebaseUser
-      return MyUser.fromFirebase(user!);
+      return user;
     } catch (e) {
       print(e);
       print('помилка при реєстрації');
@@ -36,10 +36,10 @@ class AuthService {
     }
   }
 
-  static Future logOut() async {
+   Future logOut() async {
     await _fAuth.signOut();
   }
-  static Stream<MyUser?> get currentUser{
-    return _fAuth.authStateChanges().map((User? user) =>  user != null ? MyUser.fromFirebase(user):null); // authStateChanges() is former onAuthStateChanged
+  Stream<User?> get currentUser{
+    return _fAuth.authStateChanges().map((User? user) =>  user != null ? user:null); // authStateChanges() is former onAuthStateChanged
   }
 }
